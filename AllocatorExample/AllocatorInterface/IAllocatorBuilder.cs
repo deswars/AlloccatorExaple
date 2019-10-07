@@ -2,7 +2,7 @@
 
 namespace AllocatorInterface
 {
-    interface IAllocatorBuilder
+    public interface IAllocatorBuilder
     {
         IAllocator Build(Memory memory);
     }

@@ -1,6 +1,6 @@
 ﻿namespace AllocatorInterface
 {
-    interface IAllocator
+    public interface IAllocator
     {
         uint Alloc(uint size);
         bool Free(uint address);

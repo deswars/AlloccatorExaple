@@ -2,7 +2,7 @@
 
 namespace AllocatorInterface
 {
-    interface IAllocatorRellocableBuilder
+    public interface IAllocatorRellocableBuilder
     {
         IAllocator Build(Memory memory);
     }

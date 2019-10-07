@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AllocatorInterface\AllocatorInterface.csproj" />
+    <ProjectReference Include="..\MemoryModel\MemoryModel.csproj" />
+  </ItemGroup>
+
 </Project>
