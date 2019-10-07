@@ -2,9 +2,9 @@
 
 namespace MemoryModel
 {
-    public class MemoryModel
+    public class Memory
     {
-        public MemoryModel(uint size)
+        public Memory(uint size)
         {
             _memory = new byte[size];
         }

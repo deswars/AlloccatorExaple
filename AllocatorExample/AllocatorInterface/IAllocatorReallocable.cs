@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AllocatorInterface
+﻿namespace AllocatorInterface
 {
     interface IAllocatorReallocable : IAllocator
     {
