@@ -57,7 +57,7 @@ namespace Allocators.SinglyLinkedListAllocator
                         {
                             AllocPartialBlock(currentAddres, requiredSize);
                         }
-                        return GetBlockData(currentAddres);
+                        return GetBlockDataAddress(currentAddres);
                     }
                 }
                 currentAddres = nextAddress;
@@ -69,9 +69,15 @@ namespace Allocators.SinglyLinkedListAllocator
             return Null;
         }
 
-        public bool Free(uint address)
+        public void Free(uint address)
         {
-            throw new System.NotImplementedException();
+            uint currentBlock = GetBlockHeaderAddress(address);
+            uint currentMixed = GetBlockMixed(currentBlock);
+            uint currentSize = GetSize(currentMixed);
+            currentMixed = GetMixed(currentSize, MemoryStatus.Free);
+            SetBlockMixed(currentBlock, currentMixed);
+            UniteWithNext(currentBlock);
+            UniteWithPrevious(currentBlock);
         }
 
         protected const uint addressSize = sizeof(uint);
@@ -106,9 +112,14 @@ namespace Allocators.SinglyLinkedListAllocator
             return _memory.ReadWord(address + addressSize);
         }
 
-        protected uint GetBlockData(uint address)
+        protected uint GetBlockDataAddress(uint address)
         {
             return address + headerSize;
+        }
+
+        protected uint GetBlockHeaderAddress(uint dataAddress)
+        {
+            return dataAddress - headerSize;
         }
 
         protected void SetBlockMixed(uint address, uint mixed)
@@ -148,6 +159,46 @@ namespace Allocators.SinglyLinkedListAllocator
 
             uint busyMixed = GetMixed(size, MemoryStatus.Busy);
             SetBlockHeader(address, freeAddress, busyMixed);
+        }
+
+        protected void UniteWithNext(uint address)
+        {
+            uint nextAddres = GetBlockNext(address);
+            uint nextMixed = GetBlockMixed(nextAddres);
+            MemoryStatus nextStatus = GetStatus(nextMixed);
+            if (nextStatus == MemoryStatus.Free)
+            {
+                uint mixed = GetBlockMixed(address);
+                uint size = GetSize(mixed);
+                uint nextSize = GetSize(nextMixed);
+                size += nextSize + headerSize;
+                mixed = GetMixed(size, MemoryStatus.Free);
+                SetBlockHeader(address, GetBlockNext(nextAddres), mixed);
+            }
+        }
+        protected void UniteWithPrevious(uint address)
+        {
+            uint prev = 0;
+            uint current = 0;
+            while (current != address)
+            {
+                prev = current;
+                current = GetBlockNext(current);
+            }
+            if (prev != current)
+            {
+                uint prevMixed = GetBlockMixed(prev);
+                MemoryStatus prevStatus = GetStatus(prevMixed);
+                if (prevStatus == MemoryStatus.Free)
+                {
+                    uint prevSize = GetSize(prevMixed);
+                    uint currentMixed = GetBlockMixed(current);
+                    uint currentSize = GetSize(currentMixed);
+                    prevSize += currentSize + headerSize;
+                    prevMixed = GetMixed(prevSize, MemoryStatus.Free);
+                    SetBlockHeader(prev, GetBlockNext(current), prevMixed);
+                }
+            }
         }
     }
 }

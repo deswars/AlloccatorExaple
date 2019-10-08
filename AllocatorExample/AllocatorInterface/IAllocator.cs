@@ -10,6 +10,6 @@
         uint Null { get; }
 
         uint Alloc(uint size);
-        bool Free(uint address);
+        void Free(uint address);
     }
 }
