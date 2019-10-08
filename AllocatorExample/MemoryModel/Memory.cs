@@ -81,7 +81,7 @@ namespace MemoryModel
             for (uint i = 0; i < wordSize; i++)
             {
                 result[wordSize - i - 1] = (byte)(current % nextByteValue);
-                current = current / nextByteValue;
+                current /= nextByteValue;
             }
             return result;
         }
@@ -98,7 +98,7 @@ namespace MemoryModel
             return BytesToWord(bytes);
         }
 
-        public uint Size()
+        public uint GetSize()
         {
             return (uint)_memory.Length;
         }
@@ -106,6 +106,6 @@ namespace MemoryModel
         private const uint wordSize = sizeof(uint);
         private const uint nextByteValue = 256;
 
-        private byte[] _memory;
+        private readonly byte[] _memory;
     }
 }

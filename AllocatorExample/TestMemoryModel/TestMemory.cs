@@ -6,8 +6,8 @@ namespace MemoryModel.Tests
 {
     public class TestMemory
     {
-        uint size = 10;
-        Memory memory;
+        const uint size = 10;
+        readonly Memory memory;
 
         public TestMemory()
         {
