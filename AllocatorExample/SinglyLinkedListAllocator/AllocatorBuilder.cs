@@ -5,9 +5,21 @@ namespace Allocators.SinglyLinkedListAllocator
 {
     public class AllocatorBuilder : IAllocatorBuilder
     {
-        public IAllocator Build(Memory memory)
+        public void SetMemory(Memory memory)
         {
-            return new Allocator(memory);
+            _memory = memory;
         }
+
+        public IAllocator Build()
+        {
+            return new Allocator(_memory);
+        }
+
+        public IAllocatorAnalizer BuildAnalizer()
+        {
+            return new AllocatorAnalizer(_memory);
+        }
+
+        private Memory _memory;
     }
 }

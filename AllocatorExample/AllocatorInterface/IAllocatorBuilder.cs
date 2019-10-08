@@ -4,6 +4,8 @@ namespace AllocatorInterface
 {
     public interface IAllocatorBuilder
     {
-        IAllocator Build(Memory memory);
+        void SetMemory(Memory memory);
+        IAllocator Build();
+        IAllocatorAnalizer BuildAnalizer();
     }
 }

@@ -125,8 +125,7 @@ namespace AllocatorExampleCLI
                 Console.WriteLine(i+". " + builder.FullName);
             }
             string input = Console.ReadLine();
-            int value;
-            bool isValid = int.TryParse(input, out value);
+            bool isValid = int.TryParse(input, out int value);
             if (isValid)
             {
                 i = 0;
@@ -154,11 +153,12 @@ namespace AllocatorExampleCLI
             }
 
             Memory memory = new Memory(value);
-
-            IAllocator allocator = builder.Build(memory);
+            builder.SetMemory(memory);
+            IAllocator allocator = builder.Build();
+            IAllocatorAnalizer analizer = builder.BuildAnalizer();
 
             // TODO
-            string menu = "\n==Select action==\n1. Allocate memory\n2. Free memory\n3. List allocated adresses\n4. Exit";
+            string menu = "\n==Select action==\n1. Allocate memory\n2. Free memory\n3. List allocated adresses\n4. Show memory status\n5. Exit";
             List<uint> allocated = new List<uint>();
             while (true)
             {
@@ -219,6 +219,25 @@ namespace AllocatorExampleCLI
                         }
                         break;
                     case "4":
+                        var status = analizer.AnalizeMemory();
+                        Console.WriteLine("==Possible status list==");
+                        var names = Enum.GetNames(typeof(MemoryAnalizerStatus)).ToArray();
+                        var values = Enum.GetValues(typeof(MemoryAnalizerStatus)).Cast<int>().ToArray();
+                        for (int i = 0; i < names.Length; i++)
+                        {
+                            Console.WriteLine(values[i]+ " - " + names[i]);
+                        }
+                        Console.WriteLine("==Memory Status==");
+                        for (int i = 0; i < status.Length; i++)
+                        {
+                            if (i % 64 == 0)
+                            {
+                                Console.WriteLine();
+                            }
+                            Console.Write((byte)status[i]);
+                        }
+                        break;
+                    case "5":
                         return;
                     default:
                         break;
