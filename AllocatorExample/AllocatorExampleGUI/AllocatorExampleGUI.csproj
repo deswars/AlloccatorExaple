@@ -6,4 +6,9 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AllocatorInterface\AllocatorInterface.csproj" />
+    <ProjectReference Include="..\SinglyLinkedListAllocator\SinglyLinkedListAllocator.csproj" />
+  </ItemGroup>
+
 </Project>

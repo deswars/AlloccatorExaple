@@ -5,8 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AllocatorExampleGUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="400">
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25" />
+            <RowDefinition/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Label Name="LbBuilders" Content="Available builders"/>
+        <ListBox Name="LstbxBuilders" Grid.Row="1" Grid.ColumnSpan="2" BorderThickness="5" SelectionChanged="LbBuilders_SelectionChanged" />
+        <Button Name="BtnAdd" Content="Add from file" Grid.Row="2" Grid.Column="0" Width="100" HorizontalAlignment="Left" Click="BtnAdd_Click"/>
+        <Button Name="BtnRun" Content="Run with selected" Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Right" Click="BtnRun_Click" IsEnabled="False"/>
     </Grid>
 </Window>
