@@ -11,9 +11,11 @@ namespace AllocatorExampleCLI
     class Program
     {
         const string mainMenu = "\n==MAIN MENU==\n1. Create Allocator\n2. List all builders\n3. Load assembly\n4. Load all from directory and subdirectories\n5. Exit\n";
+        static readonly string[] basicAllocatorAssembies = { "SinglyLinkedListAllocator.dll" };
 
         static void Main(string[] args)
         {
+            LoadBasicAssemblies();
             while (true)
             {
                 Console.WriteLine(mainMenu);
@@ -63,6 +65,14 @@ namespace AllocatorExampleCLI
         {
             var type = typeof(IAllocatorBuilder);
             return AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes()).Where(p => type.IsAssignableFrom(p) && p.IsClass);
+        }
+
+        static void LoadBasicAssemblies()
+        {
+            foreach (var assembly in basicAllocatorAssembies)
+            {
+                Assembly.Load(AssemblyName.GetAssemblyName(assembly));
+            }
         }
 
         static void LoadAssembly()
