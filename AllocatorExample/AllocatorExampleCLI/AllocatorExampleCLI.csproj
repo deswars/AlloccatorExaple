@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AllocatorInterface\AllocatorInterface.csproj" />
-    <ProjectReference Include="..\SinglyLinkedListAllocator\SLLAllocator.csproj" />
+    <ProjectReference Include="..\SLLAllocator\SLLAllocator.csproj" />
   </ItemGroup>
 
 </Project>

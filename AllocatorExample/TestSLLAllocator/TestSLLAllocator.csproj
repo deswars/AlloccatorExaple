@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MemoryModel\MemoryModel.csproj" />
-    <ProjectReference Include="..\SinglyLinkedListAllocator\SLLAllocator.csproj" />
+    <ProjectReference Include="..\SLLAllocator\SLLAllocator.csproj" />
   </ItemGroup>
 
 </Project>

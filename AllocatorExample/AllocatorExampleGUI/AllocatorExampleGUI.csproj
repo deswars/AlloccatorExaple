@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AllocatorInterface\AllocatorInterface.csproj" />
-    <ProjectReference Include="..\SinglyLinkedListAllocator\SLLAllocator.csproj" />
   </ItemGroup>
 
 </Project>
