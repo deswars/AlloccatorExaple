@@ -1,11 +1,10 @@
 using AllocatorInterface;
-using Allocators.SinglyLinkedListAllocator;
 using MemoryModel;
 using Xunit;
 
-namespace TestSinglyLinkedListAllocator
+namespace Allocators.SinglyLinkedListAllocator.Tests
 {
-    public class TestAllocator
+    public class AllocatorTests
     {
         const uint size = 100;
         const uint addressSize = sizeof(uint);
@@ -15,14 +14,14 @@ namespace TestSinglyLinkedListAllocator
         readonly Memory memory;
         readonly Allocator allocator;
 
-        public TestAllocator()
+        public AllocatorTests()
         {
             memory = new Memory(size);
             allocator = new Allocator(memory);
         }
 
         [Fact]
-        public void TestBuild()
+        public void BuildTest()
         {
             uint Block1NextAddress = memory.ReadWord(0);
             uint Block1Mixed = memory.ReadWord(addressSize);
@@ -35,7 +34,7 @@ namespace TestSinglyLinkedListAllocator
             Assert.Equal((uint)MemoryStatus.System, Block2Mixed);
         }
         [Fact]
-        public void TestAlloc()
+        public void AllocTest()
         {
             //first block
             uint block1Size = 10;
@@ -86,7 +85,7 @@ namespace TestSinglyLinkedListAllocator
         }
 
         [Fact]
-        public void TestFree()
+        public void FreeTest()
         {
             uint blockSize = 8;
             uint block1Address = allocator.Alloc(blockSize);
@@ -108,7 +107,7 @@ namespace TestSinglyLinkedListAllocator
             uint freeMixed = memory.ReadWord(freeAddress + addressSize);
             Assert.Equal(block4Header, freeNext);
             uint freeSize = block4Header - block3Header - headerSize;
-            Assert.Equal( freeSize | (uint)MemoryStatus.Free, freeMixed);
+            Assert.Equal(freeSize | (uint)MemoryStatus.Free, freeMixed);
 
             //free after freeBlock
             allocator.Free(block4Address);
