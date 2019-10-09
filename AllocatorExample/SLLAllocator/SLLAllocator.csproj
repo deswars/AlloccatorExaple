@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <RootNamespace>Allocators.SLLAllocator</RootNamespace>
+    <AssemblyName>Allocators.SLLAllocator</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

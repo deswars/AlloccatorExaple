@@ -1,7 +1,7 @@
 ﻿using AllocatorInterface;
 using MemoryModel;
 
-namespace Allocators.SinglyLinkedListAllocator
+namespace Allocators.SLLAllocator
 {
     class AllocatorAnalizer : IAllocatorAnalizer
     {

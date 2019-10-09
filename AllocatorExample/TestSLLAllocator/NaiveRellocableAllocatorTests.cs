@@ -2,7 +2,7 @@
 using MemoryModel;
 using Xunit;
 
-namespace Allocators.SinglyLinkedListAllocator.Tests
+namespace Allocators.SLLAllocator.Tests
 {
     public class NaiveRellocableAllocatorTests
     {

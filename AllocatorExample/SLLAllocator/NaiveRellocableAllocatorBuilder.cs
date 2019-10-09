@@ -1,9 +1,9 @@
 ﻿using AllocatorInterface;
 using MemoryModel;
 
-namespace Allocators.SinglyLinkedListAllocator
+namespace Allocators.SLLAllocator
 {
-    public class AllocatorBuilder : IAllocatorBuilder
+    class NaiveRellocableAllocatorBuilder : IAllocatorRellocableBuilder
     {
         public void SetMemory(Memory memory)
         {
@@ -12,7 +12,12 @@ namespace Allocators.SinglyLinkedListAllocator
 
         public IAllocator Build()
         {
-            return new Allocator(_memory);
+            return new NaiveRellocableAllocator(_memory);
+        }
+
+        public IAllocatorReallocable BuildRellocable()
+        {
+            return new NaiveRellocableAllocator(_memory);
         }
 
         public IAllocatorAnalizer BuildAnalizer()
