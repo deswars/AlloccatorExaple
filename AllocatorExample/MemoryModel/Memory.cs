@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MemoryModel
+﻿namespace MemoryModel
 {
     public class Memory
     {
@@ -53,7 +51,7 @@ namespace MemoryModel
                 return new byte[0];
             }
             var result = new byte[size];
-            for ( uint i = 0; i < size; i++)
+            for (uint i = 0; i < size; i++)
             {
                 result[i] = _memory[address + i];
             }
@@ -67,13 +65,13 @@ namespace MemoryModel
                 return 0;
             }
             uint result = 0;
-            for(uint i = 0; i < wordSize; i++)
+            for (uint i = 0; i < wordSize; i++)
             {
                 result = nextByteValue * result + value[i];
             }
             return result;
         }
-        
+
         public byte[] WordToBytes(uint value)
         {
             var result = new byte[wordSize];
@@ -101,6 +99,17 @@ namespace MemoryModel
         public uint GetSize()
         {
             return (uint)_memory.Length;
+        }
+
+        public void Copy(uint dest, uint source, uint size)
+        {
+            if ((dest + size <= _memory.Length) && (source + size <= _memory.Length))
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    _memory[dest + i] = _memory[source + i];
+                }
+            }
         }
 
         private const uint wordSize = sizeof(uint);

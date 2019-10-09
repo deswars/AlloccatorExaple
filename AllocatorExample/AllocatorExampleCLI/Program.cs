@@ -54,13 +54,13 @@ namespace AllocatorExampleCLI
             {
                 Console.WriteLine("==Valid classes==");
             }
-            foreach(var builder in builders)
+            foreach (var builder in builders)
             {
                 Console.WriteLine(builder.FullName);
             }
             Console.WriteLine();
         }
-        
+
         static IEnumerable<Type> GetBuilderList()
         {
             var type = typeof(IAllocatorBuilder);
@@ -98,7 +98,7 @@ namespace AllocatorExampleCLI
         static void LoadFiles(string root)
         {
             var subDir = Directory.EnumerateDirectories(root);
-            foreach(var dir in subDir)
+            foreach (var dir in subDir)
             {
                 var dirIndo = new DirectoryInfo(dir);
                 if ((dirIndo.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden)
@@ -132,7 +132,7 @@ namespace AllocatorExampleCLI
             foreach (var builder in builders)
             {
                 i++;
-                Console.WriteLine(i+". " + builder.FullName);
+                Console.WriteLine(i + ". " + builder.FullName);
             }
             string input = Console.ReadLine();
             bool isValid = int.TryParse(input, out int value);
@@ -200,9 +200,9 @@ namespace AllocatorExampleCLI
                         break;
                     case "2":
                         Console.WriteLine("\nSelect address from list");
-                        for(int i = 0; i < allocated.Count; i++)
+                        for (int i = 0; i < allocated.Count; i++)
                         {
-                            Console.WriteLine(i+". "+ allocated[i]);
+                            Console.WriteLine(i + ". " + allocated[i]);
                         }
                         input = Console.ReadLine();
                         isValid = uint.TryParse(input, out value);
@@ -235,7 +235,7 @@ namespace AllocatorExampleCLI
                         var values = Enum.GetValues(typeof(MemoryAnalizerStatus)).Cast<int>().ToArray();
                         for (int i = 0; i < names.Length; i++)
                         {
-                            Console.WriteLine(values[i]+ " - " + names[i]);
+                            Console.WriteLine(values[i] + " - " + names[i]);
                         }
                         Console.WriteLine("==Memory Status==");
                         for (int i = 0; i < status.Length; i++)

@@ -1,9 +1,7 @@
-﻿using MemoryModel;
-
-namespace AllocatorInterface
+﻿namespace AllocatorInterface
 {
-    public interface IAllocatorRellocableBuilder
+    public interface IAllocatorRellocableBuilder : IAllocatorBuilder
     {
-        IAllocator Build(Memory memory);
+        IAllocatorReallocable BuildRellocable();
     }
 }

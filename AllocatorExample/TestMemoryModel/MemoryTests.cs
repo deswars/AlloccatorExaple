@@ -1,15 +1,13 @@
-using MemoryModel;
-using System;
 using Xunit;
 
 namespace MemoryModel.Tests
 {
-    public class TestMemory
+    public class MemoryTests
     {
         const uint size = 10;
         readonly Memory memory;
 
-        public TestMemory()
+        public MemoryTests()
         {
             memory = new Memory(size);
         }
@@ -162,6 +160,40 @@ namespace MemoryModel.Tests
             uint word2 = uint.MaxValue;
             memory.WriteWord(address2, word2);
             Assert.Equal(0, memory.Read(address));
+        }
+
+        [Fact]
+        public void CopyTest()
+        {
+            uint addr1 = 1;
+            uint addr2 = 2;
+            uint addr3 = 8;
+            uint size1 = 2;
+            uint size2 = 3;
+
+            memory.Write(addr3, 10);
+            memory.Write(addr3 + 1, 11);
+
+            //out of boundary dest
+            memory.Copy(addr3, addr2, size2);
+            Assert.Equal(10, memory.Read(addr3));
+            Assert.Equal(11, memory.Read(addr3 + 1));
+
+            //out of boundary source
+            memory.Copy(addr2, addr3, size2);
+            Assert.Equal(0, memory.Read(addr2));
+            Assert.Equal(0, memory.Read(addr2 + 1));
+
+            //normal copy
+            memory.Copy(addr2, addr3, size1);
+            Assert.Equal(10, memory.Read(addr2));
+            Assert.Equal(11, memory.Read(addr2 + 1));
+
+            //overlaping copy
+            memory.Copy(addr1, addr2, size1);
+            Assert.Equal(10, memory.Read(addr1));
+            Assert.Equal(11, memory.Read(addr1 + 1));
+            Assert.Equal(11, memory.Read(addr1 + 2));
         }
     }
 }

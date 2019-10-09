@@ -80,7 +80,7 @@ namespace Allocators.SinglyLinkedListAllocator
             }
             for (uint i = dataAddress; i < dataAddress + size; i++)
             {
-                    result[i] = dataStatus;
+                result[i] = dataStatus;
             }
             return GetBlockNext(address);
         }
