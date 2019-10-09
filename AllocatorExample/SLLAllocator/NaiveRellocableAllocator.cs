@@ -12,9 +12,9 @@ namespace Allocators.SLLAllocator
             uint newAddress = Alloc(newSize);
             if (newAddress != Null)
             {
-                uint oldHeader = GetBlockHeaderAddress(address);
-                uint oldMixed = GetBlockMixed(oldHeader);
-                uint oldSize = GetSize(oldMixed);
+                uint oldHeaderAddress = GetBlockHeaderAddress(address);
+                Header oldHeader = ReadHeader(oldHeaderAddress);
+                uint oldSize = oldHeader.GetSize();
                 uint copySize = newSize > oldSize ? oldSize : newSize;
                 _memory.Copy(newAddress, address, copySize);
                 Free(address);

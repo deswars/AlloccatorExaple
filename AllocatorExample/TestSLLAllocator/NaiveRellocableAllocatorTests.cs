@@ -7,9 +7,6 @@ namespace Allocators.SLLAllocator.Tests
     public class NaiveRellocableAllocatorTests
     {
         const uint size = 100;
-        const uint addressSize = sizeof(uint);
-        const uint headerSize = addressSize * 2;
-        const uint statusMask = addressSize - 1;
         readonly Memory memory;
         readonly NaiveRellocableAllocator allocator;
 
@@ -31,15 +28,15 @@ namespace Allocators.SLLAllocator.Tests
             Assert.Equal(allocator.Null, addr3);
 
             addr3 = allocator.Relloc(addr1, blockSize1);
-            Assert.Equal(addr2 + blockSize1 + headerSize, addr3);
-            uint firstBlockMixed = memory.ReadWord(addressSize);
-            MemoryStatus firstBlockStatus = (MemoryStatus)(firstBlockMixed & statusMask);
+            Assert.Equal(addr2 + blockSize1 + Header.Size, addr3);
+            uint firstBlockMixed = memory.ReadWord(Header.AddressSize);
+            MemoryStatus firstBlockStatus = (MemoryStatus)(firstBlockMixed & Header.StatusMask);
             Assert.Equal(MemoryStatus.Free, firstBlockStatus);
 
             allocator.Free(addr2);
             allocator.Free(addr3);
             uint firstBlockNextAddr = memory.ReadWord(0);
-            Assert.Equal(size - headerSize, firstBlockNextAddr);
+            Assert.Equal(size - Header.Size, firstBlockNextAddr);
         }
     }
 }
