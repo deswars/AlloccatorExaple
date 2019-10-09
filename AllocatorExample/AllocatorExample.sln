@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SinglyLinkedListAllocator",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AllocatorExampleGUI", "AllocatorExampleGUI\AllocatorExampleGUI.csproj", "{F6B8E23D-68B8-4E2C-9BB1-ECA3A17F010A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoubleLinkedListAllocator", "DoubleLinkedListAllocator\DoubleLinkedListAllocator.csproj", "{F389BF7D-F844-43DD-831C-0BDF461DB2D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDoubleLinkedListAllocator", "TestDoubleLinkedListAllocator\TestDoubleLinkedListAllocator.csproj", "{56150B40-9342-4192-B8C1-84B135477AEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,14 @@ Global
 		{F6B8E23D-68B8-4E2C-9BB1-ECA3A17F010A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6B8E23D-68B8-4E2C-9BB1-ECA3A17F010A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6B8E23D-68B8-4E2C-9BB1-ECA3A17F010A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F389BF7D-F844-43DD-831C-0BDF461DB2D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F389BF7D-F844-43DD-831C-0BDF461DB2D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F389BF7D-F844-43DD-831C-0BDF461DB2D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F389BF7D-F844-43DD-831C-0BDF461DB2D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56150B40-9342-4192-B8C1-84B135477AEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56150B40-9342-4192-B8C1-84B135477AEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56150B40-9342-4192-B8C1-84B135477AEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56150B40-9342-4192-B8C1-84B135477AEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
