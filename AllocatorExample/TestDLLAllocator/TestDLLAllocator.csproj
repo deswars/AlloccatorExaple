@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DoubleLinkedListAllocator\DoubleLinkedListAllocator.csproj" />
+    <ProjectReference Include="..\DLLAllocator\DLLAllocator.csproj" />
   </ItemGroup>
 
 </Project>
