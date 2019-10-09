@@ -1,7 +1,7 @@
 ﻿using AllocatorInterface;
 using MemoryModel;
 
-namespace Allocators.DoubleLinkedListAllocator
+namespace Allocators.DLLAllocator
 {
     public class Allocator : IAllocator
     {
@@ -14,25 +14,18 @@ namespace Allocators.DoubleLinkedListAllocator
             _memory = memory;
             uint size = _memory.GetSize();
 
-            uint firstNext = size - headerSize;
-            uint firstPrev = Null;
-            uint firstSize = size - 2 * headerSize;
-            uint firstMixed = GetMixed(firstSize, MemoryStatus.Free);
-            SetBlockHeader(0, firstNext, firstPrev, firstMixed);
+            Header first;
+            first.NextAddress = size - Header.Size;
+            first.PrevAddress = Null;
+            first.Mixed = Header.GenerateMixed(size - 2 * Header.Size, MemoryStatus.Free);
+            WriteHeader(0, first);
 
-            uint lastNext = Null;
-            uint lastPrev = 0;
-            uint lastSize = 0;
-            uint lastMixed = GetMixed(lastSize, MemoryStatus.System);
-            SetBlockHeader(firstNext, lastNext, lastPrev, lastMixed);
+            Header last;
+            last.NextAddress = Null;
+            last.PrevAddress = 0;
+            last.Mixed = Header.GenerateMixed(0, MemoryStatus.System);
+            WriteHeader(first.NextAddress, last);
         }
-
-        protected const uint addressSize = sizeof(uint);
-        protected const uint headerSize = addressSize * 3;
-        protected const uint statusMask = addressSize - 1;
-        protected const uint sizeMask = ~statusMask;
-
-        protected Memory _memory;
 
         public uint Null
         {
@@ -45,180 +38,136 @@ namespace Allocators.DoubleLinkedListAllocator
         public uint Alloc(uint size)
         {
             //round up requested size
-            uint requiredSize = (size + addressSize - 1) & sizeMask;
+            uint requiredSize = (size + Header.AddressSize - 1) & Header.SizeMask;
 
-            uint currentAddres = 0;
-            uint nextAddress = GetBlockNext(currentAddres);
-            uint blockMixed = GetBlockMixed(currentAddres);
-            uint blockSize = GetSize(blockMixed);
-            MemoryStatus blockStatus = GetStatus(blockMixed);
-
-            while (nextAddress != Null)
+            uint headerAddress = 0;
+            Header header = ReadHeader(headerAddress);
+            while (header.NextAddress != Null)
             {
-                if (blockStatus == MemoryStatus.Free)
+                if (header.GetStatus() == MemoryStatus.Free)
                 {
-                    if (blockSize >= requiredSize)
+                    if (header.GetSize() >= requiredSize)
                     {
-                        if (blockSize <= requiredSize + headerSize)
+                        if (header.GetSize() <= requiredSize + Header.Size)
                         {
-                            AllocAllBlock(currentAddres);
+                            header.SetStatus(MemoryStatus.Busy);
+                            WriteHeader(headerAddress, header);
                         }
                         else
                         {
-                            AllocPartialBlock(currentAddres, requiredSize);
+                            SplitAndAllocBlock(headerAddress, requiredSize);
                         }
-                        return GetBlockDataAddress(currentAddres);
+                        return GetBlockDataAddress(headerAddress);
                     }
                 }
-                currentAddres = nextAddress;
-                nextAddress = GetBlockNext(currentAddres);
-                blockMixed = GetBlockMixed(currentAddres);
-                blockSize = GetSize(blockMixed);
-                blockStatus = GetStatus(blockMixed);
+                headerAddress = header.NextAddress;
+                header = ReadHeader(headerAddress);
             }
             return Null;
         }
         
         public void Free(uint address)
         {
-            uint currentBlock = GetBlockHeaderAddress(address);
-            uint currentMixed = GetBlockMixed(currentBlock);
-            uint currentSize = GetSize(currentMixed);
-            currentMixed = GetMixed(currentSize, MemoryStatus.Free);
-            SetBlockMixed(currentBlock, currentMixed);
-            UniteWithNext(currentBlock);
-            UniteWithPrevious(currentBlock);
+            uint headerAddress = GetBlockHeaderAddress(address);
+            Header header = ReadHeader(headerAddress);
+            header.SetStatus(MemoryStatus.Free);
+            WriteHeader(headerAddress, header);
+
+            UniteWithNext(headerAddress);
+            UniteWithPrevious(headerAddress);
         }
 
+        protected Memory _memory;
 
-        protected uint GetSize(uint mixedValue)
+        protected Header ReadHeader(uint address)
         {
-            return mixedValue & sizeMask;
+            uint next = _memory.ReadWord(address);
+            uint prev = _memory.ReadWord(address + Header.AddressSize);
+            uint mixed = _memory.ReadWord(address + 2 * Header.AddressSize);
+            Header result;
+            result.NextAddress = next;
+            result.PrevAddress = prev;
+            result.Mixed = mixed;
+            return result;
         }
 
-        protected MemoryStatus GetStatus(uint mixedValue)
+        protected void WriteHeader(uint address, Header header)
         {
-            return (MemoryStatus)(mixedValue & statusMask);
-        }
-
-        protected uint GetMixed(uint size, MemoryStatus status)
-        {
-            return size | (uint)status;
-        }
-
-        protected uint GetBlockNext(uint address)
-        {
-            return _memory.ReadWord(address);
-        }
-
-        protected uint GetBlockPrev(uint address)
-        {
-            return _memory.ReadWord(address + addressSize);
-        }
-
-        protected uint GetBlockMixed(uint address)
-        {
-            return _memory.ReadWord(address + 2 * addressSize);
+            _memory.WriteWord(address, header.NextAddress);
+            _memory.WriteWord(address + Header.AddressSize, header.PrevAddress);
+            _memory.WriteWord(address + 2 * Header.AddressSize, header.Mixed);
         }
 
         protected uint GetBlockDataAddress(uint address)
         {
-            return address + headerSize;
+            return address + Header.Size;
         }
 
         protected uint GetBlockHeaderAddress(uint dataAddress)
         {
-            return dataAddress - headerSize;
+            return dataAddress - Header.Size;
         }
-
-        protected void SetBlockMixed(uint address, uint mixed)
+        protected void SplitAndAllocBlock(uint address, uint size)
         {
-            _memory.WriteWord(address + 2 * addressSize, mixed);
-        }
+            Header header = ReadHeader(address);
+            uint blockSize = header.GetSize();
+            uint freeSize = blockSize - size - Header.Size;
 
-        protected void SetBlockNext(uint address, uint next)
-        {
-            _memory.WriteWord(address, next);
-        }
+            uint nextAddress = address + Header.Size + size;
+            Header nextHeader;
+            nextHeader.NextAddress = header.NextAddress;
+            nextHeader.PrevAddress = address;
+            nextHeader.Mixed = Header.GenerateMixed(freeSize, MemoryStatus.Free);
+            WriteHeader(nextAddress, nextHeader);
 
-        protected void SetBlockPrev(uint address, uint next)
-        {
-            _memory.WriteWord(address + addressSize, next);
-        }
+            header.SetMixed(size, MemoryStatus.Busy);
+            header.NextAddress = nextAddress;
+            WriteHeader(address, header);
 
-        protected void SetBlockHeader(uint address, uint next, uint prev, uint mixed)
-        {
-            SetBlockNext(address, next);
-            SetBlockPrev(address, prev);
-            SetBlockMixed(address, mixed);
-        }
-
-        protected void AllocAllBlock(uint address)
-        {
-            uint mixed = GetBlockMixed(address);
-            uint size = GetSize(mixed);
-            mixed = GetMixed(size, MemoryStatus.Busy);
-            SetBlockMixed(address, mixed);
-        }
-
-        protected void AllocPartialBlock(uint address, uint size)
-        {
-            uint nextBlock = GetBlockNext(address);
-            uint prevBlock = GetBlockPrev(address);
-            uint currentMixed = GetBlockMixed(address);
-            uint currentSize = GetSize(currentMixed);
-
-            uint freeAddress = address + headerSize + size;
-            uint freeSize = currentSize - size - headerSize;
-            uint freeMixed = GetMixed(freeSize, MemoryStatus.Free);
-            SetBlockHeader(freeAddress, nextBlock, address, freeMixed);
-
-            uint busyMixed = GetMixed(size, MemoryStatus.Busy);
-            SetBlockHeader(address, freeAddress, prevBlock, busyMixed);
+            Header nextNextHeader = ReadHeader(nextHeader.NextAddress);
+            nextNextHeader.PrevAddress = nextAddress;
+            WriteHeader(nextHeader.NextAddress, nextNextHeader);
         }
 
         protected void UniteWithNext(uint address)
         {
-            uint nextAddress = GetBlockNext(address);
-            uint nextMixed = GetBlockMixed(nextAddress);
-            MemoryStatus nextStatus = GetStatus(nextMixed);
-            if (nextStatus == MemoryStatus.Free)
+            Header header = ReadHeader(address);
+            Header nextHeader = ReadHeader(header.NextAddress);
+            if (nextHeader.GetStatus() == MemoryStatus.Free)
             {
-                uint nextnextAddress = GetBlockNext(nextAddress);
-                SetBlockPrev(nextnextAddress, address);
+                uint size = header.GetSize();
+                uint nextSize = nextHeader.GetSize();
+                size += nextSize + Header.Size;
+                header.SetSize(size);
+                header.NextAddress = nextHeader.NextAddress;
+                WriteHeader(address, header);
 
-                uint mixed = GetBlockMixed(address);
-                uint size = GetSize(mixed);
-                uint nextSize = GetSize(nextMixed);
-                size += nextSize + headerSize;
-                mixed = GetMixed(size, MemoryStatus.Free);
-                uint prevBlock = GetBlockPrev(address);
-                SetBlockHeader(address, GetBlockNext(nextAddress), prevBlock, mixed);
+                Header nextNextHeader = ReadHeader(header.NextAddress);
+                nextNextHeader.PrevAddress = address;
+                WriteHeader(header.NextAddress, nextNextHeader);
             }
         }
 
         protected void UniteWithPrevious(uint address)
         {
-            uint prevAddress = GetBlockPrev(address);
-            if (prevAddress != Null)
+            Header header = ReadHeader(address);
+            if (header.PrevAddress != Null)
             {
-                uint prevMixed = GetBlockMixed(prevAddress);
-                MemoryStatus prevStatus = GetStatus(prevMixed);
-                if (prevStatus == MemoryStatus.Free)
+                Header prevHeader = ReadHeader(header.PrevAddress);
+                if (prevHeader.GetStatus() == MemoryStatus.Free)
                 {
-                    uint nextAddress = GetBlockNext(address);
-                    SetBlockPrev(nextAddress, prevAddress);
+                    uint size = header.GetSize();
+                    uint prevSize = prevHeader.GetSize();
+                    size += prevSize + Header.Size;
+                    prevHeader.SetSize(size);
+                    prevHeader.NextAddress = header.NextAddress;
+                    WriteHeader(header.PrevAddress, prevHeader);
 
-                    uint mixed = GetBlockMixed(address);
-                    uint size = GetSize(mixed);
-                    uint prevSize = GetSize(prevMixed);
-                    size += prevSize + headerSize;
-                    mixed = GetMixed(size, MemoryStatus.Free);
-                    uint nextBlock = GetBlockNext(address);
-                    SetBlockHeader(prevAddress, nextBlock, GetBlockPrev(prevAddress), mixed);
+                    Header NextHeader = ReadHeader(prevHeader.NextAddress);
+                    NextHeader.PrevAddress = header.PrevAddress;
+                    WriteHeader(prevHeader.NextAddress, NextHeader);
                 }
             }
         }
-
     }
 }  
