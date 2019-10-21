@@ -1,4 +1,6 @@
-﻿namespace MemoryModel
+﻿using System.Diagnostics.Contracts;
+
+namespace MemoryModel
 {
     public class Memory
     {
@@ -34,6 +36,8 @@
 
         public void WriteBytes(uint address, byte[] value)
         {
+            Contract.Requires(value != null);
+
             if (address + value.Length > _memory.Length)
             {
                 return;
@@ -48,7 +52,7 @@
         {
             if (address + size > _memory.Length)
             {
-                return new byte[0];
+                return System.Array.Empty<byte>();
             }
             var result = new byte[size];
             for (uint i = 0; i < size; i++)
@@ -58,8 +62,10 @@
             return result;
         }
 
-        public uint BytesToWord(byte[] value)
+        public static uint BytesToWord(byte[] value)
         {
+            Contract.Requires(value != null);
+
             if (value.Length != wordSize)
             {
                 return 0;
@@ -72,7 +78,7 @@
             return result;
         }
 
-        public byte[] WordToBytes(uint value)
+        public static byte[] WordToBytes(uint value)
         {
             var result = new byte[wordSize];
             uint current = value;

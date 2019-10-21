@@ -85,23 +85,23 @@ namespace MemoryModel.Tests
         {
             byte[] bytes1 = { 0, 0, 0, 5 };
             uint word1 = 5;
-            Assert.Equal(word1, memory.BytesToWord(bytes1));
+            Assert.Equal(word1, Memory.BytesToWord(bytes1));
 
             byte[] bytes2 = { 0, 0, 1, 1 };
             uint word2 = 1 * 256 + 1;
-            Assert.Equal(word2, memory.BytesToWord(bytes2));
+            Assert.Equal(word2, Memory.BytesToWord(bytes2));
 
             byte[] bytes3 = { 255, 255, 255, 255 };
             uint word3 = uint.MaxValue;
-            Assert.Equal(word3, memory.BytesToWord(bytes3));
+            Assert.Equal(word3, Memory.BytesToWord(bytes3));
 
             // too small array
             byte[] bytes4 = { 0, 0, 0 };
-            Assert.Equal(0u, memory.BytesToWord(bytes4));
+            Assert.Equal(0u, Memory.BytesToWord(bytes4));
 
             // too big array
             byte[] bytes5 = { 0, 0, 0, 0, 0 };
-            Assert.Equal(0u, memory.BytesToWord(bytes5));
+            Assert.Equal(0u, Memory.BytesToWord(bytes5));
         }
 
         [Fact]
@@ -111,21 +111,21 @@ namespace MemoryModel.Tests
             uint word2 = 257;
             uint word3 = uint.MaxValue;
 
-            var bytes1 = memory.WordToBytes(word1);
+            var bytes1 = Memory.WordToBytes(word1);
             Assert.Equal(4, bytes1.Length);
             Assert.Equal(0, bytes1[0]);
             Assert.Equal(0, bytes1[1]);
             Assert.Equal(0, bytes1[2]);
             Assert.Equal(5, bytes1[3]);
 
-            var bytes2 = memory.WordToBytes(word2);
+            var bytes2 = Memory.WordToBytes(word2);
             Assert.Equal(4, bytes2.Length);
             Assert.Equal(0, bytes2[0]);
             Assert.Equal(0, bytes2[1]);
             Assert.Equal(1, bytes2[2]);
             Assert.Equal(1, bytes2[3]);
 
-            var bytes3 = memory.WordToBytes(word3);
+            var bytes3 = Memory.WordToBytes(word3);
             Assert.Equal(4, bytes3.Length);
             Assert.Equal(255, bytes3[0]);
             Assert.Equal(255, bytes3[1]);
@@ -138,7 +138,7 @@ namespace MemoryModel.Tests
         {
             uint addres = 2;
             uint word = 257;
-            var bytes = memory.WordToBytes(word);
+            var bytes = Memory.WordToBytes(word);
             memory.WriteBytes(addres, bytes);
             Assert.Equal(word, memory.ReadWord(addres));
 

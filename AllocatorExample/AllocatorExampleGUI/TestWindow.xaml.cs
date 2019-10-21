@@ -32,6 +32,8 @@ namespace AllocatorExampleGUI
         private IAllocatorBuilder _builder;
         private IAllocator _allocator;
         private IAllocatorAnalizer _analizer;
+        private uint _lastAlloc;
+        private uint _lastFree;
 
         private void Window_Closed(object sender, EventArgs e)
         {
@@ -42,7 +44,7 @@ namespace AllocatorExampleGUI
         {
             _builder = (IAllocatorBuilder)Activator.CreateInstance(Builder);
 
-            List<Color> colorList = new List<Color>{ Colors.White, Colors.Green, Colors.Blue, Colors.Red, Colors.Orange };
+            List<Color> colorList = new List<Color>{ Colors.White, Colors.Green, Colors.Blue, Colors.DarkRed, Colors.Orange };
             _colors = new Dictionary<int, Color>();
             var names = Enum.GetNames(typeof(MemoryAnalizerStatus)).ToArray();
             var values = Enum.GetValues(typeof(MemoryAnalizerStatus)).Cast<int>().ToArray();
@@ -86,6 +88,8 @@ namespace AllocatorExampleGUI
                 _builder.SetMemory(memory);
                 _allocator = _builder.Build();
                 _analizer = _builder.BuildAnalizer();
+                _lastAlloc = _allocator.Null;
+                _lastFree = _allocator.Null;
                 ShowMemoryStatus();
             }
         }
@@ -94,23 +98,56 @@ namespace AllocatorExampleGUI
         {
             MemoryAnalizerStatus[] memory = _analizer.AnalizeMemory();
             CvMemoryStatus.Children.Clear();
-            int memoryCellSize = 4;
-            int x = 0;
-            int y = 0;
+            int memoryCellSize = 5;
+            int columns = (int)(CvMemoryStatus.ActualWidth / memoryCellSize);
+            int x;
+            int y;
+
+            if (_lastAlloc != _allocator.Null)
+            {
+                x = (int)(_lastAlloc % columns) * memoryCellSize;
+                y = (int)(_lastAlloc / columns) * memoryCellSize;
+
+                Rectangle rect = new Rectangle();
+                rect.Fill = new SolidColorBrush(Colors.LightGreen);
+                rect.Width = memoryCellSize + 1;
+                rect.Height = memoryCellSize + 1;
+                Canvas.SetLeft(rect, x);
+                Canvas.SetTop(rect, y);
+                CvMemoryStatus.Children.Add(rect);
+            }
+
+            if (_lastFree != _allocator.Null)
+            {
+                x = (int)(_lastFree % columns) * memoryCellSize;
+                y = (int)(_lastFree / columns) * memoryCellSize;
+
+                Rectangle rect = new Rectangle();
+                rect.Fill = new SolidColorBrush(Colors.OrangeRed);
+                rect.Width = memoryCellSize + 1;
+                rect.Height = memoryCellSize + 1;
+                Canvas.SetLeft(rect, x);
+                Canvas.SetTop(rect, y);
+                CvMemoryStatus.Children.Add(rect);
+            }
+
+            x = 1;
+            y = 1;
+
             foreach (var cell in memory)
             {
                 Rectangle rect = new Rectangle();
                 rect.Fill = new SolidColorBrush(_colors[(int)cell]);
-                rect.Width = memoryCellSize;
-                rect.Height = memoryCellSize;
+                rect.Width = memoryCellSize - 1;
+                rect.Height = memoryCellSize - 1;
                 Canvas.SetLeft(rect, x);
                 Canvas.SetTop(rect, y);
                 CvMemoryStatus.Children.Add(rect);
 
                 x += memoryCellSize;
-                if (x >= CvMemoryStatus.ActualWidth)
+                if (x >= columns * memoryCellSize)
                 {
-                    x = 0;
+                    x = 1;
                     y += memoryCellSize;
                 }
             }
@@ -122,6 +159,8 @@ namespace AllocatorExampleGUI
             if (isValid)
             {
                 uint addr = _allocator.Alloc(size);
+                _lastAlloc = addr;
+                _lastFree = _allocator.Null;
                 if (addr != _allocator.Null)
                 {
                     LstbxAlloc.Items.Add(addr);
@@ -143,6 +182,8 @@ namespace AllocatorExampleGUI
         private void BtnFree_Click(object sender, RoutedEventArgs e)
         {
             uint address = (uint)LstbxAlloc.SelectedValue;
+            _lastAlloc = _allocator.Null;
+            _lastFree = address;
             LstbxAlloc.Items.Remove(LstbxAlloc.SelectedItem);
             _allocator.Free(address);
             BtnFree.IsEnabled = false;
