@@ -10,7 +10,7 @@ namespace Allocators.SimpleDLLAllocator
             _memory = memory;
         }
 
-        public uint Null
+        public static uint Null
         {
             get
             {
