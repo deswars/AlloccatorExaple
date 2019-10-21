@@ -56,12 +56,13 @@ namespace AllocatorExampleGUI
 
         private void BtnRun_Click(object sender, RoutedEventArgs e)
         {
-            TestWindow testWindow = new TestWindow
+            ParamWindow paramWindow = new ParamWindow
             {
                 Builder = (Type)LstbxBuilders.SelectedItem,
                 Main = this
             };
-            testWindow.Show();
+
+            paramWindow.Show();
             Visibility = Visibility.Hidden;
         }
 

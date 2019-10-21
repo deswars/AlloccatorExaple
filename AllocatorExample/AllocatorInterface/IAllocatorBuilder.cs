@@ -1,11 +1,13 @@
 ﻿using MemoryModel;
+using System.Collections.Generic;
 
 namespace AllocatorInterface
 {
     public interface IAllocatorBuilder
     {
-        void SetMemory(Memory memory);
         IAllocator Build();
         IAllocatorAnalizer BuildAnalizer();
+        Dictionary<string, string> GetParameterList();
+        void SetParameterList(Dictionary<string, string> list);
     }
 }

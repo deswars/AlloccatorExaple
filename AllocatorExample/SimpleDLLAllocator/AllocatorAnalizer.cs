@@ -20,6 +20,10 @@ namespace Allocators.SimpleDLLAllocator
 
         public MemoryAnalizerStatus[] AnalizeMemory()
         {
+            if (_memory == null)
+            {
+                return null;
+            }
             var result = new MemoryAnalizerStatus[_memory.GetSize()];
 
             Header currHeader = Header.Read(_memory, 0);

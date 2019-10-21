@@ -21,7 +21,8 @@ namespace AllocatorExampleGUI
     public partial class TestWindow : Window
     {
         public Window Main;
-        public Type Builder;
+        public IAllocator TestAllocator;
+        public IAllocatorAnalizer TestAnalizer;
 
         public TestWindow()
         {
@@ -29,9 +30,6 @@ namespace AllocatorExampleGUI
         }
 
         private Dictionary<int, Color> _colors;
-        private IAllocatorBuilder _builder;
-        private IAllocator _allocator;
-        private IAllocatorAnalizer _analizer;
         private uint _lastAlloc;
         private uint _lastFree;
 
@@ -42,8 +40,6 @@ namespace AllocatorExampleGUI
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _builder = (IAllocatorBuilder)Activator.CreateInstance(Builder);
-
             List<Color> colorList = new List<Color>{ Colors.White, Colors.Green, Colors.Blue, Colors.DarkRed, Colors.Orange };
             _colors = new Dictionary<int, Color>();
             var names = Enum.GetNames(typeof(MemoryAnalizerStatus)).ToArray();
@@ -79,38 +75,19 @@ namespace AllocatorExampleGUI
 
                 LstbxColors.Items.Add(colorGrid);
             }
-        }
-
-        private void BtnMemory_Click(object sender, RoutedEventArgs e)
-        {
-            bool isValid = uint.TryParse(TbMemory.Text, out uint size);
-            if (isValid && (size > 100))
-            {
-                TbAlloc.IsEnabled = true;
-                BtnAlloc.IsEnabled = true;
-                LstbxAlloc.Items.Clear();
-                BtnFree.IsEnabled = false;
-
-                Memory memory = new Memory(size);
-                _builder.SetMemory(memory);
-                _allocator = _builder.Build();
-                _analizer = _builder.BuildAnalizer();
-                _lastAlloc = _allocator.Null;
-                _lastFree = _allocator.Null;
-                ShowMemoryStatus();
-            }
+            ShowMemoryStatus();
         }
 
         private void ShowMemoryStatus()
         {
-            MemoryAnalizerStatus[] memory = _analizer.AnalizeMemory();
+            MemoryAnalizerStatus[] memory = TestAnalizer.AnalizeMemory();
             CvMemoryStatus.Children.Clear();
             int memoryCellSize = 5;
             int columns = (int)(CvMemoryStatus.ActualWidth / memoryCellSize);
             int x;
             int y;
 
-            if (_lastAlloc != _allocator.Null)
+            if (_lastAlloc != TestAllocator.Null)
             {
                 x = (int)(_lastAlloc % columns) * memoryCellSize;
                 y = (int)(_lastAlloc / columns) * memoryCellSize;
@@ -126,7 +103,7 @@ namespace AllocatorExampleGUI
                 CvMemoryStatus.Children.Add(rect);
             }
 
-            if (_lastFree != _allocator.Null)
+            if (_lastFree != TestAllocator.Null)
             {
                 x = (int)(_lastFree % columns) * memoryCellSize;
                 y = (int)(_lastFree / columns) * memoryCellSize;
@@ -171,10 +148,10 @@ namespace AllocatorExampleGUI
             bool isValid = uint.TryParse(TbAlloc.Text, out uint size);
             if (isValid)
             {
-                uint addr = _allocator.Alloc(size);
+                uint addr = TestAllocator.Alloc(size);
                 _lastAlloc = addr;
-                _lastFree = _allocator.Null;
-                if (addr != _allocator.Null)
+                _lastFree = TestAllocator.Null;
+                if (addr != TestAllocator.Null)
                 {
                     LstbxAlloc.Items.Add(addr);
                     LstbxAlloc.IsEnabled = true;
@@ -195,10 +172,10 @@ namespace AllocatorExampleGUI
         private void BtnFree_Click(object sender, RoutedEventArgs e)
         {
             uint address = (uint)LstbxAlloc.SelectedValue;
-            _lastAlloc = _allocator.Null;
+            _lastAlloc = TestAllocator.Null;
             _lastFree = address;
             LstbxAlloc.Items.Remove(LstbxAlloc.SelectedItem);
-            _allocator.Free(address);
+            TestAllocator.Free(address);
             BtnFree.IsEnabled = false;
             ShowMemoryStatus();
         }

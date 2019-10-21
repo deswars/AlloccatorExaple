@@ -11,7 +11,7 @@ namespace AllocatorExampleCLI
     class Program
     {
         const string mainMenu = "\n==MAIN MENU==\n1. Create Allocator\n2. List all builders\n3. Load assembly\n4. Load all from directory and subdirectories\n5. Exit\n";
-        static readonly string[] basicAllocatorAssembies = { "SinglyLinkedListAllocator.dll" };
+        static readonly string[] basicAllocatorAssembies = { "SimpleSLLAllocator.dll" };
 
         static void Main(string[] args)
         {
@@ -153,17 +153,16 @@ namespace AllocatorExampleCLI
 
         static void RunExample(IAllocatorBuilder builder)
         {
-            bool isValid = false;
-            uint value = 0;
-            while (!isValid)
+            Console.WriteLine("Input next parameters");
+            var paramList = builder.GetParameterList();
+            var outputList = new Dictionary<string, string>();
+            foreach(var param in paramList)
             {
-                Console.WriteLine("\nInput memory size");
-                string input = Console.ReadLine();
-                isValid = uint.TryParse(input, out value);
+                Console.WriteLine(param.Key);
+                string value = Console.ReadLine();
+                outputList.Add(param.Key, value);
             }
-
-            Memory memory = new Memory(value);
-            builder.SetMemory(memory);
+            builder.SetParameterList(outputList);
             IAllocator allocator = builder.Build();
             IAllocatorAnalizer analizer = builder.BuildAnalizer();
 
@@ -172,6 +171,8 @@ namespace AllocatorExampleCLI
             List<uint> allocated = new List<uint>();
             while (true)
             {
+                bool isValid;
+                uint value;
                 Console.WriteLine(menu);
                 string input = Console.ReadLine();
                 switch (input)

@@ -22,9 +22,6 @@
                 <ColumnDefinition Width="50"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label Name="LbMemory" Content="Memory size" Grid.Column="0"/>
-            <TextBox Name="TbMemory" Text="1000" BorderThickness="2" Grid.Column="1"/>
-            <Button Name="BtnMemory" Content="Create" Width="50" HorizontalAlignment="Left" Margin="5,0" Grid.Column="2" Click="BtnMemory_Click"/>
         </Grid>
         <Border BorderThickness="2" BorderBrush="Gray" Margin="5,5,5,5" Grid.Row="1" Grid.Column="0">
             <Grid>
@@ -40,8 +37,8 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Label Name="LbAlloc" Content="Alloc size" Grid.Column="0"/>
-                    <TextBox Name="TbAlloc" Text="10" IsEnabled="False" BorderThickness="2" Grid.Column="1"/>
-                    <Button Name="BtnAlloc" Content="Allocate" IsEnabled="False" Width="50" HorizontalAlignment="Right" Margin="5,0,0,0" Grid.Column="2" Click="BtnAlloc_Click"/>
+                    <TextBox Name="TbAlloc" Text="10" BorderThickness="2" Grid.Column="1"/>
+                    <Button Name="BtnAlloc" Content="Allocate" Width="50" HorizontalAlignment="Right" Margin="5,0,0,0" Grid.Column="2" Click="BtnAlloc_Click"/>
                 </Grid>
                 <ListBox Name="LstbxAlloc" IsEnabled="False" BorderThickness="2" Grid.Row="1" SelectionChanged="LstbxAlloc_SelectionChanged"/>
                 <Button Name="BtnFree" Content="Free selected" IsEnabled="False" Width="80" HorizontalAlignment="Right" Margin="5" Grid.Row="2" Click="BtnFree_Click"/>
