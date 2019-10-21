@@ -3,7 +3,7 @@ using MemoryModel;
 
 namespace Allocators.SLLAllocator
 {
-    class NaiveRellocableAllocatorBuilder : IAllocatorRellocableBuilder
+    class NaiveReallocableAllocatorBuilder : IAllocatorReallocableBuilder
     {
         public void SetMemory(Memory memory)
         {
@@ -12,12 +12,12 @@ namespace Allocators.SLLAllocator
 
         public IAllocator Build()
         {
-            return new NaiveRellocableAllocator(_memory);
+            return new NaiveReallocableAllocator(_memory);
         }
 
-        public IAllocatorReallocable BuildRellocable()
+        public IAllocatorReallocable BuildReallocable()
         {
-            return new NaiveRellocableAllocator(_memory);
+            return new NaiveReallocableAllocator(_memory);
         }
 
         public IAllocatorAnalizer BuildAnalizer()

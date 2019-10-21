@@ -8,12 +8,12 @@ namespace Allocators.SLLAllocator.Tests
     {
         const uint size = 100;
         readonly Memory memory;
-        readonly NaiveRellocableAllocator allocator;
+        readonly NaiveReallocableAllocator allocator;
 
         public NaiveRellocableAllocatorTests()
         {
             memory = new Memory(size);
-            allocator = new NaiveRellocableAllocator(memory);
+            allocator = new NaiveReallocableAllocator(memory);
         }
 
         [Fact()]
@@ -24,10 +24,10 @@ namespace Allocators.SLLAllocator.Tests
             uint addr1 = allocator.Alloc(blockSize1);
             uint addr2 = allocator.Alloc(blockSize1);
 
-            uint addr3 = allocator.Relloc(addr1, blockSize2);
+            uint addr3 = allocator.Realloc(addr1, blockSize2);
             Assert.Equal(allocator.Null, addr3);
 
-            addr3 = allocator.Relloc(addr1, blockSize1);
+            addr3 = allocator.Realloc(addr1, blockSize1);
             Assert.Equal(addr2 + blockSize1 + Header.Size, addr3);
             uint firstBlockMixed = memory.ReadWord(Header.AddressSize);
             MemoryStatus firstBlockStatus = (MemoryStatus)(firstBlockMixed & Header.StatusMask);

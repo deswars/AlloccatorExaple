@@ -3,11 +3,11 @@ using MemoryModel;
 
 namespace Allocators.SLLAllocator
 {
-    public class NaiveRellocableAllocator : Allocator, IAllocatorReallocable
+    public class NaiveReallocableAllocator : Allocator, IAllocatorReallocable
     {
-        public NaiveRellocableAllocator(Memory memory) : base(memory) { }
+        public NaiveReallocableAllocator(Memory memory) : base(memory) { }
 
-        public uint Relloc(uint address, uint newSize)
+        public uint Realloc(uint address, uint newSize)
         {
             uint newAddress = Alloc(newSize);
             if (newAddress != Null)

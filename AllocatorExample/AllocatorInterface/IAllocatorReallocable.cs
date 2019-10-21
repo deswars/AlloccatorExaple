@@ -2,6 +2,6 @@
 {
     public interface IAllocatorReallocable : IAllocator
     {
-        public uint Relloc(uint address, uint newSize);
+        public uint Realloc(uint address, uint newSize);
     }
 }
