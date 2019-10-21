@@ -47,26 +47,33 @@ namespace AllocatorExampleGUI
             List<Color> colorList = new List<Color>{ Colors.White, Colors.Green, Colors.Blue, Colors.DarkRed, Colors.Orange };
             _colors = new Dictionary<int, Color>();
             var names = Enum.GetNames(typeof(MemoryAnalizerStatus)).ToArray();
-            var values = Enum.GetValues(typeof(MemoryAnalizerStatus)).Cast<int>().ToArray();
             for (int i = 0; i < names.Length; i++)
             {
                 _colors.Add(i, colorList[i]);
                 Grid colorGrid = new Grid();
-                ColumnDefinition firstColumn = new ColumnDefinition();
-                firstColumn.Width = new GridLength(100);
+                ColumnDefinition firstColumn = new ColumnDefinition
+                {
+                    Width = new GridLength(100)
+                };
                 colorGrid.ColumnDefinitions.Add(firstColumn);
-                ColumnDefinition secondColumn = new ColumnDefinition();
-                secondColumn.Width = new GridLength(50);
+                ColumnDefinition secondColumn = new ColumnDefinition
+                {
+                    Width = new GridLength(50)
+                };
                 colorGrid.ColumnDefinitions.Add(secondColumn);
 
-                Label colorLabel = new Label();
-                colorLabel.Content = names[i];
+                Label colorLabel = new Label
+                {
+                    Content = names[i]
+                };
                 Grid.SetColumn(colorLabel, 0);
                 colorGrid.Children.Add(colorLabel);
 
-                Border colorRectangle = new Border();
-                colorRectangle.Width = 50;
-                colorRectangle.Background = new SolidColorBrush(colorList[i]);
+                Border colorRectangle = new Border
+                {
+                    Width = 50,
+                    Background = new SolidColorBrush(colorList[i])
+                };
                 Grid.SetColumn(colorRectangle, 1);
                 colorGrid.Children.Add(colorRectangle);
 
@@ -108,10 +115,12 @@ namespace AllocatorExampleGUI
                 x = (int)(_lastAlloc % columns) * memoryCellSize;
                 y = (int)(_lastAlloc / columns) * memoryCellSize;
 
-                Rectangle rect = new Rectangle();
-                rect.Fill = new SolidColorBrush(Colors.LightGreen);
-                rect.Width = memoryCellSize + 1;
-                rect.Height = memoryCellSize + 1;
+                Rectangle rect = new Rectangle
+                {
+                    Fill = new SolidColorBrush(Colors.LightGreen),
+                    Width = memoryCellSize + 1,
+                    Height = memoryCellSize + 1
+                };
                 Canvas.SetLeft(rect, x);
                 Canvas.SetTop(rect, y);
                 CvMemoryStatus.Children.Add(rect);
@@ -122,10 +131,12 @@ namespace AllocatorExampleGUI
                 x = (int)(_lastFree % columns) * memoryCellSize;
                 y = (int)(_lastFree / columns) * memoryCellSize;
 
-                Rectangle rect = new Rectangle();
-                rect.Fill = new SolidColorBrush(Colors.OrangeRed);
-                rect.Width = memoryCellSize + 1;
-                rect.Height = memoryCellSize + 1;
+                Rectangle rect = new Rectangle
+                {
+                    Fill = new SolidColorBrush(Colors.OrangeRed),
+                    Width = memoryCellSize + 1,
+                    Height = memoryCellSize + 1
+                };
                 Canvas.SetLeft(rect, x);
                 Canvas.SetTop(rect, y);
                 CvMemoryStatus.Children.Add(rect);
@@ -136,10 +147,12 @@ namespace AllocatorExampleGUI
 
             foreach (var cell in memory)
             {
-                Rectangle rect = new Rectangle();
-                rect.Fill = new SolidColorBrush(_colors[(int)cell]);
-                rect.Width = memoryCellSize - 1;
-                rect.Height = memoryCellSize - 1;
+                Rectangle rect = new Rectangle
+                {
+                    Fill = new SolidColorBrush(_colors[(int)cell]),
+                    Width = memoryCellSize - 1,
+                    Height = memoryCellSize - 1
+                };
                 Canvas.SetLeft(rect, x);
                 Canvas.SetTop(rect, y);
                 CvMemoryStatus.Children.Add(rect);

@@ -2,17 +2,18 @@
 using MemoryModel;
 using System.Diagnostics.Contracts;
 
-namespace Allocators.SimpleSLLAllocator
+namespace Allocators.SimpleDLLAllocator
 {
     public struct Header : System.IEquatable<Header>
     {
         public const uint AddressSize = sizeof(uint);
-        public const uint HeaderSize = AddressSize;
+        public const uint HeaderSize = AddressSize * 2;
         public const uint StatusMask = AddressSize - 1;
         public const uint SizeMask = ~StatusMask;
 
 #pragma warning disable CA1051 // Do not declare visible instance fields
         public uint Address;
+        public uint PrevAddress;
         public uint Size;
         public MemoryStatus Status;
 #pragma warning restore CA1051 // Do not declare visible instance fields
@@ -42,6 +43,7 @@ namespace Allocators.SimpleSLLAllocator
             result.Address = address;
             result.Size = packed & SizeMask;
             result.Status = (MemoryStatus)(packed & StatusMask);
+            result.PrevAddress = memory.ReadWord(address + AddressSize);
             return result;
         }
 
@@ -61,11 +63,12 @@ namespace Allocators.SimpleSLLAllocator
 
             uint packed = Size | (uint)Status;
             memory.WriteWord(Address, packed);
+            memory.WriteWord(Address + AddressSize, PrevAddress);
         }
 
         public bool Equals(Header other)
         {
-            return (Address == other.Address) && (Size == other.Size) && (Status == other.Status);
+            return (Address == other.Address) && (Size == other.Size) && (Status == other.Status) && (PrevAddress == other.PrevAddress);
         }
 
         public override bool Equals(object obj)
@@ -87,5 +90,6 @@ namespace Allocators.SimpleSLLAllocator
         {
             return Address.GetHashCode();
         }
+
     }
 }

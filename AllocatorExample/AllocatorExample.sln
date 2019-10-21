@@ -12,13 +12,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AllocatorInterface", "Alloc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AllocatorExampleGUI", "AllocatorExampleGUI\AllocatorExampleGUI.csproj", "{F6B8E23D-68B8-4E2C-9BB1-ECA3A17F010A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DLLAllocator", "DLLAllocator\DLLAllocator.csproj", "{F389BF7D-F844-43DD-831C-0BDF461DB2D2}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestDLLAllocator", "TestDLLAllocator\TestDLLAllocator.csproj", "{56150B40-9342-4192-B8C1-84B135477AEE}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSLLAllocator", "SimpleSLLAllocator\SimpleSLLAllocator.csproj", "{F75DFD37-B8CC-4938-99DB-3A4E7C562B16}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestSimpleSLLAllocator", "TestSimpleSLLAllocator\TestSimpleSLLAllocator.csproj", "{9FDD17FA-84B7-4895-94B2-8F3475A3F1E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleDLLAllocator", "SimpleDLLAllocator\SimpleDLLAllocator.csproj", "{6B7215FE-B768-4735-842F-9528F0243BCC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSimpleDLLAllocator", "TestSimpleDLLAllocator\TestSimpleDLLAllocator.csproj", "{84BC28CC-7966-40DA-895A-EB33ED01792C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,14 +46,6 @@ Global
 		{F6B8E23D-68B8-4E2C-9BB1-ECA3A17F010A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6B8E23D-68B8-4E2C-9BB1-ECA3A17F010A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6B8E23D-68B8-4E2C-9BB1-ECA3A17F010A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F389BF7D-F844-43DD-831C-0BDF461DB2D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F389BF7D-F844-43DD-831C-0BDF461DB2D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F389BF7D-F844-43DD-831C-0BDF461DB2D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F389BF7D-F844-43DD-831C-0BDF461DB2D2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{56150B40-9342-4192-B8C1-84B135477AEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{56150B40-9342-4192-B8C1-84B135477AEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{56150B40-9342-4192-B8C1-84B135477AEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{56150B40-9342-4192-B8C1-84B135477AEE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F75DFD37-B8CC-4938-99DB-3A4E7C562B16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F75DFD37-B8CC-4938-99DB-3A4E7C562B16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F75DFD37-B8CC-4938-99DB-3A4E7C562B16}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -62,6 +54,14 @@ Global
 		{9FDD17FA-84B7-4895-94B2-8F3475A3F1E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FDD17FA-84B7-4895-94B2-8F3475A3F1E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FDD17FA-84B7-4895-94B2-8F3475A3F1E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B7215FE-B768-4735-842F-9528F0243BCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B7215FE-B768-4735-842F-9528F0243BCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B7215FE-B768-4735-842F-9528F0243BCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B7215FE-B768-4735-842F-9528F0243BCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84BC28CC-7966-40DA-895A-EB33ED01792C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84BC28CC-7966-40DA-895A-EB33ED01792C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84BC28CC-7966-40DA-895A-EB33ED01792C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84BC28CC-7966-40DA-895A-EB33ED01792C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,7 @@
 ﻿using AllocatorInterface;
 using MemoryModel;
 
-namespace Allocators.DLLAllocator
+namespace Allocators.SimpleDLLAllocator
 {
     public class AllocatorBuilder : IAllocatorBuilder
     {
