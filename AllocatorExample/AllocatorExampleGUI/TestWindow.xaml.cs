@@ -1,5 +1,7 @@
 ﻿using AllocatorInterface;
+using Allocators.AllocationSequence;
 using MemoryModel;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +34,7 @@ namespace AllocatorExampleGUI
         private Dictionary<int, Color> _colors;
         private uint _lastAlloc;
         private uint _lastFree;
+        private List<uint> _allocated = new List<uint>();
 
         private void Window_Closed(object sender, EventArgs e)
         {
@@ -81,6 +84,53 @@ namespace AllocatorExampleGUI
         private void ShowMemoryStatus()
         {
             MemoryAnalizerStatus[] memory = TestAnalizer.AnalizeMemory();
+            DrawMemory(memory);
+            OutputMemoryStatistic(memory);
+            BlockStatus highLevel = TestAnalizer.HighLevelAnalizeMemory();
+            ShowHighLevelMemory(highLevel);
+        }
+
+        private void BtnAlloc_Click(object sender, RoutedEventArgs e)
+        {
+            bool isValid = uint.TryParse(TbAlloc.Text, out uint size);
+            if (isValid)
+            {
+                uint addr = TestAllocator.Alloc(size);
+                _lastAlloc = addr;
+                _lastFree = TestAllocator.Null;
+                if (addr != TestAllocator.Null)
+                {
+                    _allocated.Add(addr);
+                    LstbxAlloc.Items.Add(addr);
+                    LstbxAlloc.IsEnabled = true;
+                    ShowMemoryStatus();
+                }
+                else
+                {
+                    MessageBox.Show("Cannot allocate", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+        }
+
+        private void LstbxAlloc_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            BtnFree.IsEnabled = true;
+        }
+
+        private void BtnFree_Click(object sender, RoutedEventArgs e)
+        {
+            uint address = (uint)LstbxAlloc.SelectedValue;
+            _allocated.Remove(address);
+            _lastAlloc = TestAllocator.Null;
+            _lastFree = address;
+            LstbxAlloc.Items.Remove(LstbxAlloc.SelectedItem);
+            TestAllocator.Free(address);
+            BtnFree.IsEnabled = false;
+            ShowMemoryStatus();
+        }
+
+        private void DrawMemory(MemoryAnalizerStatus[] memory)
+        {
             CvMemoryStatus.Children.Clear();
             int memoryCellSize = 5;
             int columns = (int)(CvMemoryStatus.ActualWidth / memoryCellSize);
@@ -143,41 +193,80 @@ namespace AllocatorExampleGUI
             }
         }
 
-        private void BtnAlloc_Click(object sender, RoutedEventArgs e)
+        private void OutputMemoryStatistic(MemoryAnalizerStatus[] memory)
         {
-            bool isValid = uint.TryParse(TbAlloc.Text, out uint size);
-            if (isValid)
+            LstbxStatistic.Items.Clear();
+
+            int size = memory.Length;
+            var statistic = memory.GroupBy((status) => status).Select((statuses) => statuses.Key + " : " + statuses.Count() + " (" + statuses.Count() * 100 / size + "%)");
+            foreach (var stat in statistic)
             {
-                uint addr = TestAllocator.Alloc(size);
-                _lastAlloc = addr;
-                _lastFree = TestAllocator.Null;
-                if (addr != TestAllocator.Null)
-                {
-                    LstbxAlloc.Items.Add(addr);
-                    LstbxAlloc.IsEnabled = true;
-                    ShowMemoryStatus();
-                }
-                else
-                {
-                    MessageBox.Show("Cannot allocate", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
+                LstbxStatistic.Items.Add(stat);
             }
         }
 
-        private void LstbxAlloc_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ShowHighLevelMemory(BlockStatus memory)
         {
-            BtnFree.IsEnabled = true;
+            TvHighLevel.Items.Clear();
+            TreeViewItem memoryBlock = new TreeViewItem
+            {
+                Header = memory.Index + ": Size = " + memory.Size + "; Status = " + memory.Status,
+                IsExpanded = true
+            };
+            AddBlocksToTree(memory.Children, memoryBlock);
+            TvHighLevel.Items.Add(memoryBlock);
         }
 
-        private void BtnFree_Click(object sender, RoutedEventArgs e)
+        private void AddBlocksToTree(IReadOnlyList<BlockStatus> children, TreeViewItem parent)
         {
-            uint address = (uint)LstbxAlloc.SelectedValue;
-            _lastAlloc = TestAllocator.Null;
-            _lastFree = address;
-            LstbxAlloc.Items.Remove(LstbxAlloc.SelectedItem);
-            TestAllocator.Free(address);
-            BtnFree.IsEnabled = false;
-            ShowMemoryStatus();
+            if ( children == null)
+            {
+                return;
+            }
+            foreach (var child in children)
+            {
+                TreeViewItem childItem = new TreeViewItem
+                {
+                    Header = child.Index + ": Size = " + child.Size + "; Status = " + child.Status,
+                    IsExpanded = true
+                };
+                AddBlocksToTree(child.Children, childItem);
+                parent.Items.Add(childItem);
+            }
+        }
+
+        private void BtnSequence_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                Filter = "Sequence List (*.txt)|*.txt"
+            };
+            if (dialog.ShowDialog() == true)
+            {
+                var actions = ConfigurationReader.ConfigureFromFile(dialog.FileName);
+                actions.Invoke(TestAllocator, _allocated);
+                _lastAlloc = TestAllocator.Null;
+                _lastFree = TestAllocator.Null;
+                ApdateAllocatedList();
+                ShowMemoryStatus();
+            }
+        }
+
+        private void ApdateAllocatedList()
+        {
+            LstbxAlloc.Items.Clear();
+            if (_allocated.Count() == 0)
+            {
+                LstbxAlloc.IsEnabled = false;
+            }
+            else
+            {
+                foreach (var addr in _allocated)
+                {
+                    LstbxAlloc.Items.Add(addr);
+                }
+                LstbxAlloc.IsEnabled = true;
+            }
         }
     }
 }

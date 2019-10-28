@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AllocatorExampleGUI"
         mc:Ignorable="d"
-        Title="TestWindow" Height="450" Width="800" Closed="Window_Closed" Loaded="Window_Loaded">
+        Title="TestWindow" Height="800" Width="1000" Closed="Window_Closed" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
@@ -14,7 +14,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
             <ColumnDefinition/>
-            <ColumnDefinition Width="160"/>
+            <ColumnDefinition Width="200"/>
         </Grid.ColumnDefinitions>
         <Grid Name="GrdMemory" Margin="5,5,5,5" Grid.Row="0" Grid.Column="0">
             <Grid.ColumnDefinitions>
@@ -48,6 +48,16 @@
         <Border Background="Black" Grid.Column="1" Grid.Row="1">
             <Canvas Name="CvMemoryStatus" Background="Black" Margin="1"/>
         </Border>
-        <ListBox Name="LstbxColors" Background="LightGray" Grid.Column="2" Grid.Row="1"/>
+        <Grid Grid.Column="2" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="200"/>
+                <RowDefinition Height="200"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <ListBox Name="LstbxColors" Background="LightGray" Grid.Row="0"/>
+            <ListBox Name="LstbxStatistic" Grid.Row="1"/>
+            <TreeView Name="TvHighLevel" Background="LightGray" Grid.Row="2"/>
+        </Grid>
+        <Button Name="BtnSequence" Content="Load Allocation Sequence" Grid.Column="2" Click="BtnSequence_Click" />
     </Grid>
 </Window>

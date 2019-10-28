@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AllocationSequence\AllocationSequence.csproj" />
     <ProjectReference Include="..\AllocatorInterface\AllocatorInterface.csproj" />
   </ItemGroup>
 

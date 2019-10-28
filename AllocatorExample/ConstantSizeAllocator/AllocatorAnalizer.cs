@@ -1,5 +1,6 @@
 ﻿using AllocatorInterface;
 using MemoryModel;
+using System.Collections.Generic;
 
 namespace Allocators.ConstantSizeAllocator
 {
@@ -11,7 +12,7 @@ namespace Allocators.ConstantSizeAllocator
             _blockSize = blockSize;
         }
 
-        public uint Null
+        public static uint Null
         {
             get
             {
@@ -60,11 +61,45 @@ namespace Allocators.ConstantSizeAllocator
             return result;
         }
 
+        public BlockStatus HighLevelAnalizeMemory()
+        {
+            if (_memory == null)
+            {
+                return null;
+            }
+            uint index = 0;
+            uint size = _memory.GetSize();
+            MemoryAnalizerStatus status = MemoryAnalizerStatus.SpecialHeader;
+            List<BlockStatus> children = new List<BlockStatus>();
+
+            uint blockCount = _memory.GetSize() / _blockSize;
+            uint headerSize = (blockCount + 7) / 8;
+            uint reservedBlocks = (headerSize + _blockSize - 1) / _blockSize;
+
+            for (uint i = 0; i < blockCount; i++)
+            {
+                uint childIndex = i;
+                uint childSize = _blockSize;
+                MemoryAnalizerStatus childStatus;
+                if (i < reservedBlocks)
+                {
+                    childStatus = MemoryAnalizerStatus.Header;
+                }
+                else
+                {
+                    childStatus = IsAllocated(i * _blockSize) ? MemoryAnalizerStatus.Data : MemoryAnalizerStatus.Free;
+                }
+                BlockStatus child = new BlockStatus(childIndex, childSize, childStatus, null);
+                children.Add(child);
+            }
+            BlockStatus memoryBlock = new BlockStatus(index, size, status, children);
+            return memoryBlock;
+        }
+
         private static readonly byte[] MaskBit = { 0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00100000, 0b01000000, 0b10000000 };
-        private const byte BusyByte = 255;
 
         private readonly Memory _memory;
-        private uint _blockSize;
+        private readonly uint _blockSize;
 
         private bool IsAllocated(uint address)
         {

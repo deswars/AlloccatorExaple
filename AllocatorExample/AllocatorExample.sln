@@ -20,7 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleDLLAllocator", "Simpl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestSimpleDLLAllocator", "TestSimpleDLLAllocator\TestSimpleDLLAllocator.csproj", "{84BC28CC-7966-40DA-895A-EB33ED01792C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConstantSizeAllocator", "ConstantSizeAllocator\ConstantSizeAllocator.csproj", "{835AFBF3-01E5-47C8-B8F7-1F8ED733F614}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConstantSizeAllocator", "ConstantSizeAllocator\ConstantSizeAllocator.csproj", "{835AFBF3-01E5-47C8-B8F7-1F8ED733F614}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllocationSequence", "AllocationSequence\AllocationSequence.csproj", "{51B4917F-417B-4B45-8EFA-185CFFB7347D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +70,10 @@ Global
 		{835AFBF3-01E5-47C8-B8F7-1F8ED733F614}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{835AFBF3-01E5-47C8-B8F7-1F8ED733F614}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{835AFBF3-01E5-47C8-B8F7-1F8ED733F614}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51B4917F-417B-4B45-8EFA-185CFFB7347D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51B4917F-417B-4B45-8EFA-185CFFB7347D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51B4917F-417B-4B45-8EFA-185CFFB7347D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51B4917F-417B-4B45-8EFA-185CFFB7347D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
