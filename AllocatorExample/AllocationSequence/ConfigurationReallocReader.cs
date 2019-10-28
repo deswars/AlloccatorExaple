@@ -7,22 +7,22 @@ using System.Linq;
 
 namespace Allocators.AllocationSequence
 {
-    public static class ConfigurationReader
+    public static class ConfigurationReallocReader
     {
-        public static Action<IAllocator, IList<uint>> Configure(IEnumerable<string> actions)
+        public static Action<IAllocatorReallocable, IList<uint>> Configure(IEnumerable<string> actions)
         {
-            Action<IAllocator, IList<uint>> result = StaticActions.ActionNull;
+            Action<IAllocatorReallocable, IList<uint>> result = StaticActions.ActionReallocableNull;
             result = actions.Select(ToDelegate).Aggregate(result, AggregateActions);
             return result;
         }
 
-        public static Action<IAllocator, IList<uint>> ConfigureFromFile(string file)
+        public static Action<IAllocatorReallocable, IList<uint>> ConfigureFromFile(string file)
         {
             string[] input = File.ReadAllLines(file);
             return Configure(input);
         }
 
-        private static Action<IAllocator, IList<uint>> AggregateActions(Action<IAllocator, IList<uint>> sum, Action<IAllocator, IList<uint>> curr)
+        private static Action<IAllocatorReallocable, IList<uint>> AggregateActions(Action<IAllocatorReallocable, IList<uint>> sum, Action<IAllocatorReallocable, IList<uint>> curr)
         {
             if (curr != null)
             {
@@ -31,7 +31,7 @@ namespace Allocators.AllocationSequence
             return sum;
         }
 
-        private static Action<IAllocator, IList<uint>> ToDelegate(string data)
+        private static Action<IAllocatorReallocable, IList<uint>> ToDelegate(string data)
         {
             var arguments = data.Split(" ");
             switch (arguments[0])
@@ -42,7 +42,7 @@ namespace Allocators.AllocationSequence
                         if (uint.TryParse(arguments[1], out uint size))
                         {
                             var action = new ActionAlloc(size);
-                            return action.Action;
+                            return action.ActionReallocable;
                         }
                     }
                     break;
@@ -52,14 +52,27 @@ namespace Allocators.AllocationSequence
                         if (int.TryParse(arguments[1], out int index))
                         {
                             var action = new ActionFree(index);
-                            return action.Action;
+                            return action.ActionReallocable;
+                        }
+                    }
+                    break;
+                case "realloc":
+                    if (arguments.Length == 3)
+                    {
+                        if (int.TryParse(arguments[1], out int index))
+                        {
+                            if (uint.TryParse(arguments[2], out uint size))
+                            {
+                                var action = new ActionRealloc(index, size);
+                                return action.ActionReallocable;
+                            }
                         }
                     }
                     break;
                 case "freeall":
-                    return StaticActions.ActionFreeAll;
+                    return StaticActions.ActionReallocableFreeAll;
                 case "null":
-                    return StaticActions.ActionFreeAll;
+                    return StaticActions.ActionReallocableNull;
                 default:
                     break;
             }

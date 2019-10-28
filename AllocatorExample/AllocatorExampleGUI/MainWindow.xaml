@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AllocatorExampleGUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="400">
+        Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
@@ -16,9 +16,12 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Label Name="LbBuilders" Content="Available builders"/>
-        <ListBox Name="LstbxBuilders" Grid.Row="1" Grid.ColumnSpan="2" BorderThickness="5" SelectionChanged="LbBuilders_SelectionChanged" />
+        <Label Name="LbBuilders" Content="Available builders" Grid.Column="0"/>
+        <Label Name="LbReallocBuilders" Content="Available reallocable builders" Grid.Column="1"/>
+        <ListBox Name="LstbxBuilders" Grid.Row="1" Grid.Column="0" BorderThickness="5" SelectionChanged="LbBuilders_SelectionChanged" />
+        <ListBox Name="LstbxReallocBuilders" Grid.Row="1" Grid.Column="1" BorderThickness="5" SelectionChanged="LstbxRealocBuilders_SelectionChanged"/>
         <Button Name="BtnAdd" Content="Add from file" Grid.Row="2" Grid.Column="0" Width="100" HorizontalAlignment="Left" Click="BtnAdd_Click"/>
-        <Button Name="BtnRun" Content="Run with selected" Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Right" Click="BtnRun_Click" IsEnabled="False"/>
+        <Button Name="BtnRun" Content="Run with selected" Grid.Row="2" Grid.Column="0" Width="100" HorizontalAlignment="Right" Click="BtnRun_Click" IsEnabled="False"/>
+        <Button Name="BtnReallocRun" Content="Run with selected" Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Right" IsEnabled="False" Click="BtnRealocRun_Click"/>
     </Grid>
 </Window>

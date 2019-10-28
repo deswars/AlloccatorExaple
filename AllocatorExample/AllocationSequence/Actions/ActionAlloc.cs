@@ -23,6 +23,18 @@ namespace Allocators.AllocationSequence.Actions
             }
         }
 
+        public void ActionReallocable(IAllocatorReallocable alloc, IList<uint> address)
+        {
+            Contract.Requires(alloc != null);
+            Contract.Requires(address != null);
+
+            uint addr = alloc.Alloc(_size);
+            if (addr != alloc.Null)
+            {
+                address.Add(addr);
+            }
+        }
+
         private readonly uint _size;
     }
 }

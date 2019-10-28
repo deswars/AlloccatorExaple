@@ -46,6 +46,17 @@ namespace AllocatorExampleGUI
                     {
                         LstbxBuilders.Items.Add(builder);
                     }
+
+                    type = typeof(IAllocatorReallocableBuilder);
+                    list = AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes()).Where(p => type.IsAssignableFrom(p) && p.IsClass);
+                    LstbxReallocBuilders.Items.Clear();
+                    foreach (var builder in list)
+                    {
+                        LstbxReallocBuilders.Items.Add(builder);
+                    }
+
+                    BtnRun.IsEnabled = false;
+                    BtnReallocRun.IsEnabled = false;
                 }
                 catch
                 {
@@ -59,7 +70,8 @@ namespace AllocatorExampleGUI
             ParamWindow paramWindow = new ParamWindow
             {
                 Builder = (Type)LstbxBuilders.SelectedItem,
-                Main = this
+                Main = this,
+                IsReallocable = false
             };
 
             paramWindow.Show();
@@ -69,6 +81,24 @@ namespace AllocatorExampleGUI
         private void LbBuilders_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             BtnRun.IsEnabled = true;
+        }
+
+        private void LstbxRealocBuilders_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            BtnReallocRun.IsEnabled = true;
+        }
+
+        private void BtnRealocRun_Click(object sender, RoutedEventArgs e)
+        {
+            ParamWindow ParamWindow = new ParamWindow
+            {
+                Builder = (Type)LstbxReallocBuilders.SelectedItem,
+                Main = this,
+                IsReallocable = true
+            };
+
+            ParamWindow.Show();
+            Visibility = Visibility.Hidden;
         }
     }
 }

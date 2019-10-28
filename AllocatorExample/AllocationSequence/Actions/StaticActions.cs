@@ -23,5 +23,22 @@ namespace Allocators.AllocationSequence.Actions
             }
             address.Clear();
         }
+
+        public static void ActionReallocableNull(IAllocatorReallocable alloc, IList<uint> address)
+        {
+            return;
+        }
+
+        public static void ActionReallocableFreeAll(IAllocatorReallocable alloc, IList<uint> address)
+        {
+            Contract.Requires(alloc != null);
+            Contract.Requires(address != null);
+
+            foreach (var addr in address)
+            {
+                alloc.Free(addr);
+            }
+            address.Clear();
+        }
     }
 }

@@ -5,7 +5,7 @@
 
     <IsPackable>false</IsPackable>
 
-    <RootNamespace>Allocators.TestSimpleSLLAllocator</RootNamespace>
+    <RootNamespace>Allocators.SimpleSLLAllocator.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

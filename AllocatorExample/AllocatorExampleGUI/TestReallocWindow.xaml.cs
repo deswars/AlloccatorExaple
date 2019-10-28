@@ -18,15 +18,15 @@ using System.Windows.Shapes;
 namespace AllocatorExampleGUI
 {
     /// <summary>
-    /// Interaction logic for TestWindow.xaml
+    /// Interaction logic for TestReallocWindow.xaml
     /// </summary>
-    public partial class TestWindow : Window
+    public partial class TestReallocWindow : Window
     {
         public Window Main;
-        public IAllocator TestAllocator;
+        public IAllocatorReallocable TestAllocator;
         public IAllocatorAnalizer TestAnalizer;
 
-        public TestWindow()
+        public TestReallocWindow()
         {
             InitializeComponent();
         }
@@ -43,7 +43,7 @@ namespace AllocatorExampleGUI
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            List<Color> colorList = new List<Color>{ Colors.White, Colors.Green, Colors.Blue, Colors.DarkRed, Colors.Orange };
+            List<Color> colorList = new List<Color> { Colors.White, Colors.Green, Colors.Blue, Colors.DarkRed, Colors.Orange };
             _colors = new Dictionary<int, Color>();
             var names = Enum.GetNames(typeof(MemoryAnalizerStatus)).ToArray();
             for (int i = 0; i < names.Length; i++)
@@ -115,6 +115,7 @@ namespace AllocatorExampleGUI
         private void LstbxAlloc_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             BtnFree.IsEnabled = true;
+            BtnRealloc.IsEnabled = true;
         }
 
         private void BtnFree_Click(object sender, RoutedEventArgs e)
@@ -126,6 +127,7 @@ namespace AllocatorExampleGUI
             LstbxAlloc.Items.Remove(LstbxAlloc.SelectedItem);
             TestAllocator.Free(address);
             BtnFree.IsEnabled = false;
+            BtnRealloc.IsEnabled = false;
             ShowMemoryStatus();
         }
 
@@ -240,7 +242,7 @@ namespace AllocatorExampleGUI
 
         private void AddBlocksToTree(IReadOnlyList<BlockStatus> children, TreeViewItem parent)
         {
-            if ( children == null)
+            if (children == null)
             {
                 return;
             }
@@ -264,7 +266,7 @@ namespace AllocatorExampleGUI
             };
             if (dialog.ShowDialog() == true)
             {
-                var actions = ConfigurationReader.ConfigureFromFile(dialog.FileName);
+                var actions = ConfigurationReallocReader.ConfigureFromFile(dialog.FileName);
                 actions.Invoke(TestAllocator, _allocated);
                 _lastAlloc = TestAllocator.Null;
                 _lastFree = TestAllocator.Null;
@@ -302,7 +304,38 @@ namespace AllocatorExampleGUI
             _lastFree = TestAllocator.Null;
             LstbxAlloc.Items.Clear();
             BtnFree.IsEnabled = false;
+            BtnRealloc.IsEnabled = false;
             ShowMemoryStatus();
+        }
+
+        private void BtnRealloc_Click(object sender, RoutedEventArgs e)
+        {
+            bool isValid = uint.TryParse(TbAlloc.Text, out uint size);
+            if (isValid)
+            {
+                uint address = (uint)LstbxAlloc.SelectedValue;
+                uint newAddress = TestAllocator.Realloc(address, size);
+                _lastAlloc = newAddress;
+                if (newAddress != TestAllocator.Null)
+                {
+                    _lastFree = address;
+
+                    _allocated.Remove(address);
+                    LstbxAlloc.Items.Remove(LstbxAlloc.SelectedItem);
+
+                    _allocated.Add(newAddress);
+                    LstbxAlloc.Items.Add(newAddress);
+
+                    BtnFree.IsEnabled = false;
+                    BtnRealloc.IsEnabled = false;
+                    ShowMemoryStatus();
+                }
+                else
+                {
+                    _lastFree = TestAllocator.Null;
+                    MessageBox.Show("Cannot reallocate", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
         }
     }
 }

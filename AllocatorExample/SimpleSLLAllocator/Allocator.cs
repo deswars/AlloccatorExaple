@@ -125,7 +125,7 @@ namespace Allocators.SimpleSLLAllocator
             return currHeader;
         }
 
-        private Header FindPrevOrFirst(Header currHeader)
+        protected Header FindPrevOrFirst(Header currHeader)
         {
             if (currHeader.Address == 0)
             {

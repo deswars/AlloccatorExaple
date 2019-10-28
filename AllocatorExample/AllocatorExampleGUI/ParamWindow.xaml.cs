@@ -20,6 +20,7 @@ namespace AllocatorExampleGUI
     {
         public Window Main;
         public Type Builder;
+        public bool IsReallocable;
 
         public ParamWindow()
         {
@@ -90,15 +91,29 @@ namespace AllocatorExampleGUI
             }
             _builder.SetParameterList(resultList);
 
-            TestWindow testWindow = new TestWindow
+            if (!IsReallocable)
             {
-                Main = this.Main,
-                TestAllocator = _builder.Build(),
-                TestAnalizer = _builder.BuildAnalizer()
-            };
-
-            testWindow.Show();
-            this.Close();
+                TestWindow testWindow = new TestWindow
+                {
+                    Main = this.Main,
+                    TestAllocator = _builder.Build(),
+                    TestAnalizer = _builder.BuildAnalizer()
+                };
+                testWindow.Show();
+                this.Close();
+            }
+            else
+            {
+                IAllocatorReallocableBuilder builder = (IAllocatorReallocableBuilder)_builder;
+                TestReallocWindow testWindow = new TestReallocWindow
+                {
+                    Main = this.Main,
+                    TestAllocator = builder.BuildReallocable(),
+                    TestAnalizer = builder.BuildAnalizer()
+                };
+                testWindow.Show();
+                this.Close();
+            }
         }
     }
 }
