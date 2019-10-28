@@ -199,9 +199,30 @@ namespace AllocatorExampleGUI
 
             int size = memory.Length;
             var statistic = memory.GroupBy((status) => status).Select((statuses) => statuses.Key + " : " + statuses.Count() + " (" + statuses.Count() * 100 / size + "%)");
+            var percentages = memory.GroupBy((status) => status).Select((statuses) => new Tuple<int, Color>(statuses.Count() * 100 / size, _colors[(int)statuses.Key]));
             foreach (var stat in statistic)
             {
                 LstbxStatistic.Items.Add(stat);
+            }
+
+            CanGraph.Children.Clear();
+            double width = CanGraph.ActualWidth;
+            double onePerc = width / 100;
+            int start = 0;
+            int end = 0;
+            foreach (var perc in percentages)
+            {
+                end += perc.Item1;
+                Rectangle rect = new Rectangle
+                {
+                    Fill = new SolidColorBrush(perc.Item2),
+                    Width = perc.Item1 * onePerc,
+                    Height = CanGraph.ActualHeight
+                };
+                Canvas.SetLeft(rect, start * onePerc);
+                Canvas.SetTop(rect, 0);
+                CanGraph.Children.Add(rect);
+                start = end;
             }
         }
 
